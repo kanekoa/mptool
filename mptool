@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+import argparse
+import os.path
+import subprocess
+import plistlib
+import shutil
+
+class MobileProvision():
+
+    __path = None
+    __plist = None
+    __plist_object = None
+
+    def __init__(self, mobileprovision_path):
+        self.__path = os.path.abspath(os.path.expanduser(mobileprovision_path))
+        cmd = 'security cms -D -i %s' % mobileprovision_path
+        self.__plist = subprocess.check_output(cmd,shell=True)
+        self.__plist_object = plistlib.readPlistFromString(self.__plist)
+
+    def get(self, key):
+        return self.__plist_object[key]
+
+    def get_uuid(self):
+        return self.get('UUID')
+
+    def install(self, destination):
+        abs_destination = os.path.abspath(os.path.expanduser(destination if destination else '~/Library/MobileDevice/Provisioning Profiles'))
+        install_mobileprovision = '%s/%s.mobileprovision' % (abs_destination, self.get_uuid())
+        shutil.copyfile(self.__path, install_mobileprovision)
+        print('installed to %s' % install_mobileprovision)
+
+    def get_plist(self):
+        return self.__plist
+
+arg_parser = argparse.ArgumentParser(description='mobileprovision file tool')
+command_parsers = arg_parser.add_subparsers(dest='command')
+install_parser = command_parsers.add_parser('install')
+install_parser.add_argument('--dest', help="optional")
+dump_parser = command_parsers.add_parser('dump')
+arg_parser.add_argument('mobileprovision')
+args = arg_parser.parse_args()
+
+mobileprovision = MobileProvision(args.mobileprovision)
+
+{
+    'install':(lambda : mobileprovision.install(args.dest)),
+    'dump'   :(lambda : print(mobileprovision.get_plist()))
+}[args.command]()
+    
+
