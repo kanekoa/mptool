@@ -34,11 +34,20 @@ class MobileProvision():
     def get_plist(self):
         return self.__plist
 
-arg_parser = argparse.ArgumentParser(description='mobileprovision file tool')
+arg_parser = argparse.ArgumentParser(description='command line tool for .mobileprovision file',
+                                     prog='mptool')
+arg_parser.add_argument('--version',
+                        action='version',
+                        version='%(prog)s 1.0')
 command_parsers = arg_parser.add_subparsers(dest='command')
+
+# SubCommand: install
 install_parser = command_parsers.add_parser('install')
 install_parser.add_argument('--dest', help="optional")
+
+# SubCommand: dump
 dump_parser = command_parsers.add_parser('dump')
+
 arg_parser.add_argument('mobileprovision')
 args = arg_parser.parse_args()
 
