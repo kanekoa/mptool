@@ -14,7 +14,7 @@ installed to /Users/you/Library/MobileDevice/Provisioning Profiles/XXXXXXXX-XXXX
 ### read
 
 ```
-$ mptool read --key UUID /path/to/yourapp..mobileprovision
+$ mptool read --key UUID /path/to/yourapp.mobileprovision
 XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 ```
 
