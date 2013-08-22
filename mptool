@@ -48,14 +48,19 @@ install_parser.add_argument('--dest', help="optional")
 # SubCommand: dump
 dump_parser = command_parsers.add_parser('dump')
 
+# SubCommand: read
+uuid_parser = command_parsers.add_parser('read')
+uuid_parser.add_argument('--key', help="required")
+
 arg_parser.add_argument('mobileprovision')
 args = arg_parser.parse_args()
 
 mobileprovision = MobileProvision(args.mobileprovision)
 
 {
-    'install':(lambda : mobileprovision.install(args.dest)),
-    'dump'   :(lambda : print(mobileprovision.get_plist()))
+    'install' :(lambda : mobileprovision.install(args.dest)),
+    'dump'    :(lambda : print(mobileprovision.get_plist())),
+    'read':(lambda : print(mobileprovision.get(args.key)))
 }[args.command]()
     
 
